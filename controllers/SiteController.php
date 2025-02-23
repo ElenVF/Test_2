@@ -134,19 +134,20 @@ class SiteController extends Controller
     public function actionTest()
     {
         $model = new History();
-        
+        $result = [];
         if ($model->load(Yii::$app->request->post())) {
             $result = $this->checkStr($model);
-       
-            if ($model->save()) {
-            return $result['message'];
-            }
+            $model->save();
+            return $this->render('test', [
+                'model' => $model,
+                'success' => $result['success'] ? 'alert-success' : 'alert-danger',
+                'message' => $result['message'],
+            ]);
         }
         return $this->render('test', [
             'model' => $model,
         ]);
     }
-
     public function languageDetection($name)
     {
         $enCount =  preg_match_all('/[A-Za-z]/u', $name);

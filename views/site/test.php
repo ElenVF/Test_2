@@ -1,5 +1,4 @@
 
-
 <?php
 
 /** @var yii\web\View $this */
@@ -18,79 +17,75 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 
-        <p>
-          Введите строку для проверки
-        </p>
+    <p>
+        Введите строку для проверки
+    </p>
 
-        <div class="row">
-            <div class="col-lg-5">
+    <div class="row">
+        <div class="col-lg-5">
 
-            <div id="w3-danger-0"></div>
-                <?php $form = ActiveForm::begin([ 'id' => 'my-ajax-form',
-  ]
-               
-                
+            <div id="notification" class="alert <?=$success ?? '' ?>">
+                <?=$message ?? '' ?>
+            </div>
+            <?php $form = ActiveForm::begin([ 'id' => 'my-ajax-form',
+                ]
+
+
             ); ?>
 
-               
 
-                    <?= $form->field($model, 'text')->textarea(['rows' => 6,'id' => 'ajax-textarea']) ?>
 
-                    <div class="form-group">
-                        <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'text','id'=>'submit']) ?>
-                    </div>
+            <?= $form->field($model, 'text')->textarea(['rows' => 6,'id' => 'ajax-textarea']) ?>
 
-                <?php ActiveForm::end(); ?>
-
+            <div class="form-group">
+                <?= Html::submitButton('Отправить', ['class' => 'btn btn-primary', 'name' => 'submit','id'=>'submit']) ?>
             </div>
+
+            <?php ActiveForm::end(); ?>
+
         </div>
+    </div>
 
 
 </div>
 <?php
 
 
-?><script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Получаем элементы формы, текстового поля и уведомлений
-    var form = document.getElementById('my-ajax-form');
-    var textarea = document.getElementById('ajax-textarea');
-    var notification = document.getElementById('w3-danger-0'); 
+?>
 
-    // Устанавливаем флаг в зависимости от того, была ли отправлена форма
-    let flag = <?= Yii::$app->request->isPost ? 'true' : 'false' ?>;
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('my-ajax-form');
+        var textarea = document.getElementById('ajax-textarea');
+        var notification = document.getElementById('notification');
+        let isChecked =  <?=Yii::$app->request->isPost ? 'true' : 'false' ?>
 
-    // Обработчик события для текстового поля
-    textarea.addEventListener('input', () => {
-        var inputText = textarea.value.trim(); // Получаем текст из textarea и удаляем лишние пробелы
-        if (inputText === '') return; // Если текст пустой, выходим из функции
-        if (flag === false) return; // Если флаг не установлен, выходим из функции
+        textarea.addEventListener('input', () => {
+            var inputText = textarea.value.trim();
+            if (inputText === '') return;
+            if (isChecked === false) return;
 
-        // Создаем новый XMLHttpRequest для отправки данных на сервер
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', '<?= yii\helpers\Url::to(['site/two']) ?>', true); // Указываем метод и URL для запроса
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // Устанавливаем заголовок для отправки данных
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '<?= yii\helpers\Url::to(['site/two']) ?>', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        // Обработчик события при успешном завершении запроса
-        xhr.onload = () => {
-            var response = JSON.parse(xhr.responseText); // Парсим ответ от сервера
-            notification.innerHTML = response.message; // Отображаем сообщение в элементе уведомления
-            notification.className = response.success ? 'alert alert-success' : 'alert alert-danger'; // Устанавливаем класс в зависимости от успеха
-        };
+            xhr.onload = () => {
+                var response = JSON.parse(xhr.responseText);
+                notification.innerHTML = response.message;
+                notification.className = response.success ? 'alert alert-success' : 'alert alert-danger';
+            };
 
-        // Обработчик события при ошибке запроса
-        xhr.onerror = () => {
-            notification.innerHTML = 'Ошибка сети.'; 
-            notification.className = 'alert alert-danger'; // Устанавливаем класс для отображения ошибки
-        };
+            xhr.onerror = () => {
+                notification.innerHTML = 'Ошибка сети.';
+                notification.className = 'alert alert-danger';
+            };
 
-        // Отправляем данные на сервер, включая CSRF-токен для безопасности
-        xhr.send('text=' + encodeURIComponent(inputText) + '&<?= Yii::$app->request->csrfParam ?>=<?= Yii::$app->request->csrfToken ?>');
+            xhr.send('text=' + encodeURIComponent(inputText) + '&<?= Yii::$app->request->csrfParam ?>=<?= Yii::$app->request->csrfToken ?>');
+        });
+
+
+        form.addEventListener('submit', function() {
+            isChecked = true;
+        });
     });
-
-    // Обработчик события для отправки формы
-    form.addEventListener('submit', function() {
-        flag = true; // Устанавливаем флаг в true, если форма отправляется
-    });
-});
 </script>
