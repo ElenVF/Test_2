@@ -47,3 +47,27 @@ $this->title = 'Проверка';
     <?php }?>
 </div>
 
+
+
+<script>
+      $(document).ready(function() {
+        $("table").DataTable({
+          order: [0, 'desc'],
+          language: {
+            "sEmptyTable": "Нет данных в таблице",
+            "sInfo": "Показано _START_ до _END_ из _TOTAL_ записей",
+            "sInfoEmpty": "Показано 0 до 0 из 0 записей",
+            "sInfoFiltered": "(отфильтровано из _MAX_ записей)",
+            "sLengthMenu": "Показать _MENU_ записей",
+            "sLoadingRecords": "Загрузка...",
+            "sProcessing": "Обработка...",
+            "sSearch": "Поиск:",
+            "sZeroRecords": "Совпадений не найдено",
+            "oPaginate": {
+              "sPrevious": "<i class='fa fa-chevron-left'></i>", // Стрелка назад
+              "sNext": "<i class='fa fa-chevron-right'></i>" // Стрелка вперед
+            }
+          }
+        });
+      });
+    </script>
