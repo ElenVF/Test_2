@@ -134,8 +134,10 @@ class SiteController extends Controller
     public function actionTest()
     {
         $model = new History();
+        
         if ($model->load(Yii::$app->request->post())) {
             $result = $this->checkStr($model);
+       
             if ($model->save()) {
                 Yii::$app->session->setFlash($result['success'] ? 'success' : 'danger', $result['message']);
             }
@@ -195,6 +197,7 @@ class SiteController extends Controller
 
     public function checkStr(History &$model) :array {
         $lang = $this->languageDetection($model->text);
+        $model->lang = $lang;
         $matches = $this->errorDetection($model->text, $lang, $model);
         $success = false;
         if ($matches == 'Ошибок не найдено') {

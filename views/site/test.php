@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <div class="col-lg-5">
 
-            <div id="notification"></div>
+            <div id="w3-danger-0"></div>
                 <?php $form = ActiveForm::begin([ 'id' => 'my-ajax-form',
   ]
                
@@ -56,7 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('my-ajax-form');
     var textarea = document.getElementById('ajax-textarea');
-    var notification = document.getElementById('notification');
+    var notification = document.getElementByСlassName('w3-danger-0');
+  
     let flag =  <?=Yii::$app->request->isPost ? 'true' : 'false' ?>
    
     textarea.addEventListener('input', () => {
