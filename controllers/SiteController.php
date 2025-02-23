@@ -139,7 +139,7 @@ class SiteController extends Controller
             $result = $this->checkStr($model);
        
             if ($model->save()) {
-                Yii::$app->session->setFlash($result['success'] ? 'success' : 'danger', $result['message']);
+            return $result['message'];
             }
         }
         return $this->render('test', [

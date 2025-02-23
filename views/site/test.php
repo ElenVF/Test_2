@@ -50,42 +50,47 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 
 
-?>
-
-<script>
+?><script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Получаем элементы формы, текстового поля и уведомлений
     var form = document.getElementById('my-ajax-form');
     var textarea = document.getElementById('ajax-textarea');
-    var notification = document.getElementByСlassName('w3-danger-0');
-  
-    let flag =  <?=Yii::$app->request->isPost ? 'true' : 'false' ?>
-   
+    var notification = document.getElementById('w3-danger-0'); 
+
+    // Устанавливаем флаг в зависимости от того, была ли отправлена форма
+    let flag = <?= Yii::$app->request->isPost ? 'true' : 'false' ?>;
+
+    // Обработчик события для текстового поля
     textarea.addEventListener('input', () => {
-    var inputText = textarea.value.trim();
-    if (inputText === '') return;
-    if (flag === false) return; 
+        var inputText = textarea.value.trim(); // Получаем текст из textarea и удаляем лишние пробелы
+        if (inputText === '') return; // Если текст пустой, выходим из функции
+        if (flag === false) return; // Если флаг не установлен, выходим из функции
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '<?= yii\helpers\Url::to(['site/two']) ?>', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        // Создаем новый XMLHttpRequest для отправки данных на сервер
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '<?= yii\helpers\Url::to(['site/two']) ?>', true); // Указываем метод и URL для запроса
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); // Устанавливаем заголовок для отправки данных
 
-    xhr.onload = () => {
-        var response = JSON.parse(xhr.responseText);
-        notification.innerHTML = response.message;
-        notification.className = response.success ? 'alert alert-success' : 'alert alert-danger';
-    };
+        // Обработчик события при успешном завершении запроса
+        xhr.onload = () => {
+            var response = JSON.parse(xhr.responseText); // Парсим ответ от сервера
+            notification.innerHTML = response.message; // Отображаем сообщение в элементе уведомления
+            notification.className = response.success ? 'alert alert-success' : 'alert alert-danger'; // Устанавливаем класс в зависимости от успеха
+        };
 
-    xhr.onerror = () => {
-        notification.innerHTML = 'Ошибка сети.';
-        notification.className = 'alert alert-danger';
-    };
+        // Обработчик события при ошибке запроса
+        xhr.onerror = () => {
+            notification.innerHTML = 'Ошибка сети.'; 
+            notification.className = 'alert alert-danger'; // Устанавливаем класс для отображения ошибки
+        };
 
-    xhr.send('text=' + encodeURIComponent(inputText) + '&<?= Yii::$app->request->csrfParam ?>=<?= Yii::$app->request->csrfToken ?>');
-});
+        // Отправляем данные на сервер, включая CSRF-токен для безопасности
+        xhr.send('text=' + encodeURIComponent(inputText) + '&<?= Yii::$app->request->csrfParam ?>=<?= Yii::$app->request->csrfToken ?>');
+    });
 
-
+    // Обработчик события для отправки формы
     form.addEventListener('submit', function() {
-        flag = true;
+        flag = true; // Устанавливаем флаг в true, если форма отправляется
     });
 });
 </script>
