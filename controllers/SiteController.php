@@ -135,21 +135,9 @@ class SiteController extends Controller
     {
         $model = new History();
         if ($model->load(Yii::$app->request->post())) {
-            $name = $model->text;
-            $lang = $this->languageDetection($name);
-            $matches = $this->errorDetection($name, $lang, $model);
-            $model->lang = $lang;
-            if ($matches !== 'Ошибок не найдено') {
-                $lang = $this->languageDetection($name);
-                $matches = $this->errorDetection($name, $lang, $model);
-            }
+            $result = $this->checkStr($model);
             if ($model->save()) {
-                if ($matches === 'Ошибок не найдено') {
-                    $status = 'success';
-                } else {
-                    $status = 'danger';
-                }
-                Yii::$app->session->setFlash($status, 'Язык, на котором был введен текст: ' . $lang . '.  ' . $matches);
+                Yii::$app->session->setFlash($result['success'] ? 'success' : 'danger', $result['message']);
             }
         }
         return $this->render('test', [
@@ -168,7 +156,7 @@ class SiteController extends Controller
         }
     }
 
-    public function errorDetection($name, $lang, $model)
+    public function errorDetection($name, $lang, &$model)
     {
         if ($lang == 'Русский') {
             preg_match_all('/[A-Za-z]/u', $name, $matches);
@@ -189,4 +177,36 @@ class SiteController extends Controller
             return 'Ошибок не найдено';
         }
     }
-}
+
+
+
+    public function actionTwo()
+    {
+        $result = [];
+        if (Yii::$app->request->isPost) {
+            $model = new History();
+            $model->text = Yii::$app->request->post('text');
+            if ($model->text) {
+                $result = $this->checkStr($model);
+            }
+        }
+        return $this->asJson($result);
+    }
+
+    public function checkStr(History &$model) :array {
+        $lang = $this->languageDetection($model->text);
+        $matches = $this->errorDetection($model->text, $lang, $model);
+        $success = false;
+        if ($matches == 'Ошибок не найдено') {
+            $success = true;
+        }
+        return [
+            'success' => $success,
+            'message' => 'Язык, на котором был введен текст: ' . $lang . '.  ' . $matches
+        ];
+    }
+    }
+    
+     
+    
+

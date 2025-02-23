@@ -25,6 +25,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <head>
     <title><?= Html::encode('TEST') ?></title>
     <?php $this->head() ?>
+    <meta name="csrf-token" content="<?= Yii::$app->request->csrfToken ?>">
+  
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
