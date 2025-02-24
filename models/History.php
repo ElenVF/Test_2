@@ -29,8 +29,8 @@ class History extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['text'], 'required'],
-            [['text'], 'string'],
+//            [['text'], 'required'],
+//            [['text'], 'string'],
             [['created_at'], 'safe'],
             [['list_error', 'lang'], 'string', 'max' => 255],
         ];
